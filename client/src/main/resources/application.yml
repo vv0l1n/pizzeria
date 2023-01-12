@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5010/pizzeria
+    username: w0lin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+    testWhileIdle: true
+    validationQuery: SELECT 1
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      client:
+        registration:
+          pizzeria-client-oidc:
+            provider: spring
+            client-id: pizzeria-client
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://127.0.0.1:8080/login/oauth2/code/{registrationId}"
+            scope: openid
+            client-name: pizzeria-client-oidc
+          pizzeria-client-authorization-code:
+            provider: spring
+            client-id: pizzeria-client
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://127.0.0.1:8080/authorized"
+            scope: pizzeria.user
+            client-name: pizzeria-client-authorization-code
+        provider:
+          spring:
+            issuer-uri: http://auth-server:9000
