@@ -13,6 +13,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -54,19 +55,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-
-        var u1 = User.withUsername("test1")
-                .password("admin12")
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(u1);
-    }
-
-    @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -76,8 +66,8 @@ public class SecurityConfig {
                 .clientSecret("secret")
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
-                .redirectUri("http://client:8080/login/oauth2/code/pizzeria-client-oidc")
-                .redirectUri("http://client:8080/authorized")
+                .redirectUri("http://127.0.0.1:8080/login/oauth2/code/pizzeria-client-oidc")
+                .redirectUri("http://127.0.0.1:8080/authorized")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
@@ -116,7 +106,8 @@ public class SecurityConfig {
     @Bean
     public AuthorizationServerSettings providerSettings() {
         return AuthorizationServerSettings.builder()
-                .issuer("http://auth-server:9000")
+                //.issuer("http://auth-server:9000")
                 .build();
     }
+
 }
